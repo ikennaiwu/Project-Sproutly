@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nodejs-sproutly-app-service
+  labels:
+    app: nodejs-sproutly-app
+spec:
+  selector:
+    app: nodejs-sproutly-app  # Must match the label from the deployment
+  ports:
+    - protocol: TCP
+      port: 80        # The port that the service will expose
+      targetPort: 3000  # The port your Node.js app listens to in the container
+  type: LoadBalancer  # This exposes the service externally (change to NodePort or ClusterIP if needed)
+

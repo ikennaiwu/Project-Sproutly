@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodejs-sproutly-app-deployment
+  labels:
+    app: nodejs-sproutly-app
+spec:
+  replicas: 2  # Specify 2 replicas
+  selector:
+    matchLabels:
+      app: nodejs-sproutly-app
+  template:
+    metadata:
+      labels:
+        app: nodejs-sproutly-app
+    spec:
+      containers:
+      - name: nodejs-sproutly-app  # Set the container name
+        image: node:14  # Use the appropriate Node.js image, update as needed
+        ports:
+        - containerPort: 3000  # Assuming your app listens on port 3000
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: APP_PORT
+          value: "3000"
