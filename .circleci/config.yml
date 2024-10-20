@@ -33,7 +33,7 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            -"9a:07:39:49:ab:4b:ab:91:b8:22:ec:31:b9:e4:f5:0f"
+            -"b5:92:44:96:2f:02:e3:2c:7f:53:80:24:af:db:de:3d"
       - run:
           name: Setup KUBECONFIG
           command: |
