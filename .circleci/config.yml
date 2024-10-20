@@ -17,11 +17,11 @@ jobs:
 
       - run:
           name: Build Docker image
-          command: docker build -t your_dockerhub_username/nodejs-sproutly-app .
+          command: docker build -t piusiyke/nodejs-sproutly-app .
 
       - run:
           name: Push Docker Image to DockerHub
-          command: docker push your_dockerhub_username/nodejs-sproutly-app
+          command: docker push piusiyke/nodejs-sproutly-app
       - persist_to_workspace:
           root: .
           paths:
