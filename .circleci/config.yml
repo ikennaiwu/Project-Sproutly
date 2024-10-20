@@ -35,9 +35,15 @@ jobs:
           fingerprints:
             - "b5:92:44:96:2f:02:e3:2c:7f:53:80:24:af:db:de:3d"
       - run:
+          name: Ensure PEM file has correct permissions
+          command: |
+            chmod 600 /home/ubuntu/main.pem
+      - run:
           name: Setup KUBECONFIG
           command: |
-            ssh -o "StrictHostKeyChecking no" -i /home/ubuntu/main.pem ubuntu@54.82.25.216 "mkdir -p ~/.kube && echo \$KUBECONFIG_DATA | base64 --decode > ~/.kube/config"
+            scp -i /home/ubuntu/main.pem ubuntu@54.82.25.216:/home/ubuntu/kubeconfig.yaml ~/.kube/config
+            sed -i 's/127.0.0.1/54.82.25.216/g' ~/.kube/config
+            export KUBECONFIG=~/.kube/config
       - run:
           name: Deploy to K3s
           command: |
