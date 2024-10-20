@@ -33,7 +33,7 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "your-ssh-key-fingerprint"
+            -"9a:07:39:49:ab:4b:ab:91:b8:22:ec:31:b9:e4:f5:0f"
       - run:
           name: Setup KUBECONFIG
           command: |
@@ -44,7 +44,7 @@ jobs:
             ssh -o "StrictHostKeyChecking no" ubuntu@54.82.25.216 "
               kubectl apply -f nodejs-sproutly-app-deployment.yaml
               kubectl apply -f nodejs-sproutly-app-service.yaml
-              kubectl set image deployment/nodejs-sproutly-app-deployment.yaml nodejs-sproutly-app=your_dockerhub_username/nodejs-sproutly-app:latest --record
+              kubectl set image deployment/nodejs-sproutly-app-deployment.yaml nodejs-sproutly-app=piusiyke/nodejs-sproutly-app:latest --record
             "
 
 workflows:
