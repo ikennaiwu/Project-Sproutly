@@ -33,18 +33,18 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            -"b5:92:44:96:2f:02:e3:2c:7f:53:80:24:af:db:de:3d"
+            - "b5:92:44:96:2f:02:e3:2c:7f:53:80:24:af:db:de:3d"
       - run:
           name: Setup KUBECONFIG
           command: |
-            ssh -o "StrictHostKeyChecking no" ubuntu@54.82.25.216 "mkdir -p ~/.kube && echo $KUBECONFIG_DATA | base64 --decode > ~/.kube/config"
+            ssh -o "StrictHostKeyChecking no" -i /home/ubuntu/main.pem ubuntu@54.82.25.216 "mkdir -p ~/.kube && echo $KUBECONFIG_DATA | base64 --decode > ~/.kube/config"
       - run:
           name: Deploy to K3s
           command: |
-            ssh -o "StrictHostKeyChecking no" ubuntu@54.82.25.216 "
+            ssh -o "StrictHostKeyChecking no" -i /home/ubuntu/main.pem ubuntu@54.82.25.216 "
               kubectl apply -f nodejs-sproutly-app-deployment.yaml
               kubectl apply -f nodejs-sproutly-app-service.yaml
-              kubectl set image deployment/nodejs-sproutly-app-deployment.yaml nodejs-sproutly-app=piusiyke/nodejs-sproutly-app:latest --record
+              kubectl set image deployment/nodejs-sproutly-app-deployment nodejs-sproutly-app=piusiyke/nodejs-sproutly-app:latest --record
             "
 
 workflows:
@@ -55,3 +55,4 @@ workflows:
       - deploy-to-k3s:
           requires:
             - build-and-push
+
