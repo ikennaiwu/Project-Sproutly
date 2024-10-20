@@ -10,12 +10,17 @@ jobs:
       - run:
           name: Install Dependencies
           command: npm install
+
+      - run:
+          name: Docker Login to DockerHub
+          command: |
+             set -x
+             docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+
       - run:
           name: Build Docker image
           command: docker build -t your_dockerhub_username/nodejs-sproutly-app .
-      - run:
-          name: Docker Login to DockerHub
-          command: docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+
       - run:
           name: Push Docker Image to DockerHub
           command: docker push your_dockerhub_username/nodejs-sproutly-app
