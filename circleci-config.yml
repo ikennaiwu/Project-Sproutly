@@ -27,7 +27,7 @@ jobs:
 
   deploy-to-k3s:
     docker:
-      - image: circleci/python:3.8  # Choose a basic image for SSH and kubectl
+      - image: circleci/node:14  # Use Node.js 14 for deployment
     steps:
       - add_ssh_keys:
           fingerprints:
@@ -35,12 +35,14 @@ jobs:
       - run:
           name: Setup KUBECONFIG
           command: |
-            ssh -o "StrictHostKeyChecking no" ubuntu@<your-ec2-ip> "mkdir -p /.kube && echo $KUBECONFIG_DATA | base64 --decode > /.kube/config"
+            ssh -o "StrictHostKeyChecking no" ubuntu@<54.82.25.216> "mkdir -p ~/.kube && echo $KUBECONFIG_DATA | base64 --decode > ~/.kube/config"
       - run:
           name: Deploy to K3s
           command: |
-            ssh -o "StrictHostKeyChecking no" ubuntu@<your-ec2-ip> "
-              kubectl set image deployment/nodejs-sproutly-app nodejs-sproutly-app=your_dockerhub_username/nodejs-sproutly-app:latest --record
+            ssh -o "StrictHostKeyChecking no" ubuntu@54.82.25.216 "
+              kubectl apply -f nodejs-sproutly-app-deployment.yaml
+              kubectl apply -f nodejs-sproutly-app-service.yaml
+              kubectl set image deployment/nodejs-sproutly-app-deployment.yaml nodejs-sproutly-app=your_dockerhub_username/nodejs-sproutly-app:latest --record
             "
 
 workflows:
