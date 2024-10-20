@@ -35,9 +35,10 @@ jobs:
           fingerprints:
             - "b5:92:44:96:2f:02:e3:2c:7f:53:80:24:af:db:de:3d"
       - run:
-          name: Ensure PEM file has correct permissions
+          name: Recreate PEM file from CircleCI environment variable
           command: |
-            chmod 600 /home/ubuntu/main.pem
+            echo "$PEM_KEY" > /home/circleci/main.pem
+            chmod 600 /home/circleci/main.pem
       - run:
           name: Setup KUBECONFIG
           command: |
