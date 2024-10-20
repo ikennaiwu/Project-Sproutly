@@ -1,0 +1,56 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js 14
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Docker Login to DockerHub
+        run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+      - name: Build Docker Image
+        run: docker build -t piusiyke/nodejs-sproutly-app .
+
+      - name: Push Docker Image to DockerHub
+        run: docker push piusiyke/nodejs-sproutly-app
+
+  deploy-to-k3s:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Add SSH Key
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Copy Kubeconfig from K3s Server
+        run: |
+          scp -o "StrictHostKeyChecking no" -i /home/ubuntu/main.pem ubuntu@54.82.25.216:/home/ubuntu/kubeconfig.yaml ~/.kube/config
+          sed -i 's/127.0.0.1/54.82.25.216/g' ~/.kube/config
+          export KUBECONFIG=~/.kube/config
+
+      - name: Deploy to K3s
+        run: |
+          kubectl apply -f nodejs-sproutly-app-deployment.yaml
+          kubectl apply -f nodejs-sproutly-app-service.yaml
+          kubectl set image deployment/nodejs-sproutly-app-deployment nodejs-sproutly-app=piusiyke/nodejs-sproutly-app:latest --record
