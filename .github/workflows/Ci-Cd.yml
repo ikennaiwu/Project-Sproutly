@@ -42,7 +42,10 @@ jobs:
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
+          
+      - name: Create .kube directory
+        run: mkdir -p ~/.kube
+        
       - name: Copy Kubeconfig from K3s Server
         run: |
           scp -o "StrictHostKeyChecking no" -i /home/ubuntu/main.pem ubuntu@54.82.25.216:/home/ubuntu/kubeconfig.yaml ~/.kube/config
